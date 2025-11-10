@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Systems Quiz Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            overflow-x: auto;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            transition: all 0.3s;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: #e8e8e8;
+            color: #333;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .quiz-mode {
+            display: none;
+        }
+
+        .quiz-mode.active {
+            display: block;
+        }
+
+        .question-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options {
+            margin-bottom: 15px;
+        }
+
+        .option {
+            background: white;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e8eeff;
+        }
+
+        .option.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .option.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .answer-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e0f7fa;
+            border-radius: 8px;
+            border-left: 4px solid #26c6da;
+            display: none;
+        }
+
+        .answer-section.show {
+            display: block;
+        }
+
+        .answer-label {
+            font-weight: bold;
+            color: #00796b;
+            margin-bottom: 8px;
+        }
+
+        .explanation {
+            color: #555;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px;
+            color: #555;
+        }
+
+        .welcome-message h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .welcome-message p {
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 1 auto;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Embedded Systems Quiz Practice</h1>
+            <p>Master your knowledge topic by topic</p>
+        </div>
+
+        <div class="tabs" id="tabsContainer">
+            <button class="tab active" data-topic="welcome">Home</button>
+            <button class="tab" data-topic="all">All Topics</button>
+            <button class="tab" data-topic="intro">Introduction to Embedded</button>
+            <button class="tab" data-topic="c">Embedded C</button>
+            <button class="tab" data-topic="gpio">GPIO</button>
+            <button class="tab" data-topic="digital">Digital Communication</button>
+            <button class="tab" data-topic="interrupts">Interrupts</button>
+            <button class="tab" data-topic="timers">Timers & PWM</button>
+            <button class="tab" data-topic="adc">ADC</button>
+            <button class="tab" data-topic="os">Embedded OS</button>
+            <button class="tab" data-topic="testing">Testing</button>
+            <button class="tab" data-topic="optimise">Optimise</button>
+            <button class="tab" data-topic="sensor">Sensor Fusion</button>
+        </div>
+
+        <div class="content" id="content">
+            <div class="quiz-mode active" id="welcome">
+                <div class="welcome-message">
+                    <h2>Welcome to Your Quiz Practice System!</h2>
+                    <p>📚 Select a topic from the tabs above to start practicing.</p>
+                    <p>✅ Choose "All Topics" for a comprehensive test covering everything.</p>
+                    <p>🎯 Track your progress and review explanations for each question.</p>
+                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18)</p>
+                </div>
+            </div>
+
+            <div class="quiz-mode" id="all"></div>
+            <div class="quiz-mode" id="intro"></div>
+            <div class="quiz-mode" id="c"></div>
+            <div class="quiz-mode" id="gpio">
+                <div class="welcome-message">
+                    <h2>GPIO Questions Coming Soon</h2>
+                    <p>Add your GPIO questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="digital">
+                <div class="welcome-message">
+                    <h2>Digital Communication Questions Coming Soon</h2>
+                    <p>Add your Digital Communication questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="interrupts">
+                <div class="welcome-message">
+                    <h2>Interrupts Questions Coming Soon</h2>
+                    <p>Add your Interrupts questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="timers">
+                <div class="welcome-message">
+                    <h2>Timers & PWM Questions Coming Soon</h2>
+                    <p>Add your Timers & PWM questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="adc">
+                <div class="welcome-message">
+                    <h2>ADC Questions Coming Soon</h2>
+                    <p>Add your ADC questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="os">
+                <div class="welcome-message">
+                    <h2>Embedded OS Questions Coming Soon</h2>
+                    <p>Add your Embedded OS questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="testing">
+                <div class="welcome-message">
+                    <h2>Testing Questions Coming Soon</h2>
+                    <p>Add your Testing questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="optimise">
+                <div class="welcome-message">
+                    <h2>Optimise Questions Coming Soon</h2>
+                    <p>Add your Optimise questions to populate this section.</p>
+                </div>
+            </div>
+            <div class="quiz-mode" id="sensor">
+                <div class="welcome-message">
+                    <h2>Sensor Fusion Questions Coming Soon</h2>
+                    <p>Add your Sensor Fusion questions to populate this section.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            intro: [
+                {
+                    question: "Which of the following is true about 'hard real-time constraints'?",
+                    options: ["A late response can degrade a system.", "Tasks have no deadlines.", "Missed deadline can have extreme consequences.", "Typically non-critical systems."],
+                    correct: 2,
+                    explanation: "Hard real-time constraints imply that missing a deadline can result in severe system failures or extreme consequences."
+                },
+                {
+                    question: "Which best describes the pattern that any embedded system should follow?",
+                    options: ["input-process-output", "process-output-input", "input-output-process", "process-input-output"],
+                    correct: 0,
+                    explanation: "The standard flow for embedded systems is input data, process it, and then output the result."
+                },
+                {
+                    question: "Which of the following properties of embedded systems are true? (Select all that apply)",
+                    options: ["Microcontrollers are typically used rather than microprocessors", "Dedication to a wide range of tasks", "Utilization of high memory and computing power", "Necessity for strict timing constraints"],
+                    correct: [0, 3],
+                    explanation: "Embedded systems typically use microcontrollers and often require strict timing constraints to operate correctly.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Which of the following best defines an Embedded System (ES)?",
+                    options: ["A standalone software application.", "A system that only uses analogue electronics.", "A general-purpose computer for various tasks.", "A computing system dedicated to a specific task within a larger electrical system."],
+                    correct: 3,
+                    explanation: "An embedded system is designed for a specific task, typically part of a larger system, often with real-time constraints."
+                },
+                {
+                    question: "An Assembler ...",
+                    options: ["is also called a Compiler", "optimizes the source code.", "translates an assembly source file into an object file", "does a one-to-one with a compiler"],
+                    correct: 2,
+                    explanation: "An assembler converts assembly language code into machine code or an object file, but it doesn't optimize the code like a compiler."
+                },
+                {
+                    question: "Choose the programming language that is the lowest level.",
+                    options: ["C", "Fortran", "Object", "Assembly"],
+                    correct: 3,
+                    explanation: "Assembly is a low-level programming language that directly corresponds to machine code instructions."
+                },
+                {
+                    question: "What type of real-time constraint describes a system where missing deadlines can have catastrophic consequences (e.g., an airbag controller)?",
+                    options: ["Soft real-time", "Adaptive real-time", "Non real-time", "Hard real-time"],
+                    correct: 3,
+                    explanation: "Hard real-time systems have strict deadlines, and missing these deadlines can have catastrophic consequences."
+                },
+                {
+                    question: "Based on the lecture, which file(s) can be converted to an object file? (Select all that apply)",
+                    options: ["C file", "Decoded file", "Hex file", "Assembly file"],
+                    correct: [0, 3],
+                    explanation: "Both C and Assembly source files can be compiled into object files.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Which is/are the typical product development process?",
+                    options: ["Testing", "Deployment", "Implementation", "All of the above"],
+                    correct: 3,
+                    explanation: "Product development typically includes testing, deployment, and implementation phases."
+                },
+                {
+                    question: "Which one is an intermediate file produced by the compiler?",
+                    options: ["Binary file", "Objective file", "Objection file", "Object file"],
+                    correct: 3,
+                    explanation: "The object file is an intermediate file produced by the compiler before linking to generate the final executable."
+                },
+                {
+                    question: "The Linker ...",
+                    options: ["Executes a file", "Combines one or more object files into a single executable file", "Loads the executable file to the memory for execution", "Archives the data files into a single executable file"],
+                    correct: 1,
+                    explanation: "The linker combines object files into an executable file, resolving external references between them."
+                },
+                {
+                    question: "A Compiler ...",
+                    options: ["Arranges all the '.c' files in the folder", "Translates source codes in 'C' language into an executable file.", "Translates source codes in 'C' language into object files", "Is also called an Assembler."],
+                    correct: 2,
+                    explanation: "The compiler translates the source code (in C) into object files, which are then linked to create an executable."
+                },
+                {
+                    question: "Which is the main characteristic of low-level language?",
+                    options: ["Do not need a compiler/assembler", "Very easy to understand", "Compact and optimized", "Productivity"],
+                    correct: 2,
+                    explanation: "Low-level languages are typically more compact and optimized for direct hardware control, but they are harder to understand."
+                },
+                {
+                    question: "Which of the following are properties of Embedded Systems? (Select all that apply)",
+                    options: ["They are dedicated to handle specific tasks.", "They interact with the real world using sensors and actuators.", "They use abundant resources compared to general-purpose computers.", "They often have strict timing constraints."],
+                    correct: [0, 1, 3],
+                    explanation: "Embedded systems are task-specific, interact with the physical world, and often have strict timing and resource constraints.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Which of these are properties of embedded systems? (Select all that apply)",
+                    options: ["Unlimited processing power", "Able to handle certain timing constraints", "Based on microcontrollers", "Infinite memory"],
+                    correct: [1, 2],
+                    explanation: "Embedded systems often use microcontrollers and handle timing constraints, but they have limited resources, including processing power and memory.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "What is a 'Heisenbug' as described in the context of the Therac-25 case study?",
+                    options: ["A bug that disappears or changes behavior when observed or debugged.", "A bug related to network communication.", "A bug that explodes", "A bug that is easy to reproduce and fix.", "A bug caused by hardware malfunction."],
+                    correct: 0,
+                    explanation: "A Heisenbug is a type of bug that seems to disappear or behave differently when the program is being debugged or observed."
+                },
+                {
+                    question: "A startup code typically (Select all that apply)",
+                    options: ["Initialize the Stack", "Reset all the memory", "Initialize the Heap", "Calls the main function", "Return to the main function"],
+                    correct: [0, 2, 3],
+                    explanation: "Startup code usually sets up the environment, initializes hardware, and then calls the main function to start the program's execution.",
+                    multipleCorrect: true
+                }
+            ],
+            c: [
+                {
+                    question: "~0xEEE0 = ?",
+                    options: ["0x111F", "0xEEE0", "0x0", "0xFFFF"],
+                    correct: 0,
+                    explanation: "The tilde (~) operator is a bitwise NOT operation. The bitwise negation of 0xEEE0 results in 0x111F."
+                },
+                {
+                    question: "What does the term 'Data Type' primarily refer to in C programming?",
+                    options: ["The name of a variable", "The type of data a variable can hold", "The memory address of a variable", "The size of a variable"],
+                    correct: 1,
+                    explanation: "In C programming, the 'Data Type' refers to the kind of data a variable can store, such as integer, float, char, etc."
+                },
+                {
+                    question: "17 && 23 = ?",
+                    options: ["0", "1", "17", "23"],
+                    correct: 1,
+                    explanation: "The && operator is the logical AND operator. Since both 17 and 23 are non-zero, the result is true, which is represented as 1."
+                },
+                {
+                    question: "The operator (!) is used for Bitwise Complement (Negation)?",
+                    options: ["True", "False"],
+                    correct: 1,
+                    explanation: "The operator ! is used for logical negation, not bitwise negation. The correct operator for bitwise negation is ~."
+                },
+                {
+                    question: "Which of the following is False?",
+                    options: ["Addition (+)", "Modulo (%)", "Division (/)", "Exponentiation (^)"],
+                    correct: 3,
+                    explanation: "In C, the caret (^) is NOT an exponentiation operator—it's the bitwise XOR operator. C does not have a built-in exponentiation operator; use pow() from math.h instead."
+                },
+                {
+                    question: "How many different bitwise operators are there? (Assume it's for Pico C SDK)",
+                    options: ["2", "3", "4", "5", "6"],
+                    correct: 4,
+                    explanation: "There are 6 bitwise operators in C: & (AND), | (OR), ^ (XOR), ~ (NOT), << (Left Shift), >> (Right Shift)."
+                },
+                {
+                    question: "In C, what numeric value represents TRUE in a conditional expression? (Select all that apply)",
+                    options: ["-1", "1", "Any non-zero value", "0"],
+                    correct: [0, 1, 2],
+                    explanation: "In C, any non-zero value is treated as TRUE. While comparison operations conventionally return 1 for TRUE, values like -1 or any other non-zero number are also evaluated as TRUE in conditional expressions.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Which type of variable retains its value between function calls and is stored in RAM?",
+                    options: ["Static variable", "Local variable", "Global variable", "Register variable"],
+                    correct: 0,
+                    explanation: "Static variables retain their values between function calls and are stored in RAM."
+                },
+                {
+                    question: "Which operator is used to find the remainder of an integer division?",
+                    options: ["/", "-", "%", "^", "+", "*"],
+                    correct: 2,
+                    explanation: "The modulo operator (%) is used to find the remainder of an integer division."
+                },
+                {
+                    question: "How many bytes of memory does a char data type typically require in most C compilers?",
+                    options: ["2 bytes", "4 bytes", "1 byte", "8 bytes"],
+                    correct: 2,
+                    explanation: "In most C compilers, a char data type typically requires 1 byte of memory."
+                },
+                {
+                    question: "When monitoring a specific bit, for example, bit 5 of register P0, what expression creates a mask to target that bit?",
+                    options: ["(P0 & 5)", "(P0 | 5)", "(5 << 1)", "(1 << 5)"],
+                    correct: 3,
+                    explanation: "The bit shift operation (1 << 5) creates a mask with only bit 5 set to 1, creating the binary pattern 00100000 to target bit 5 of register P0."
+                },
+                {
+                    question: "Performing a left shift operation on a number by N bits is equivalent to what arithmetic operation?",
+                    options: ["Dividing the number by 2 to the power of N", "Multiplying the number by 2 to the power of N", "Adding N to the number", "Subtracting N from the number"],
+                    correct: 1,
+                    explanation: "A left shift operation by N bits is equivalent to multiplying the number by 2^N."
+                },
+                {
+                    question: "To extract the upper 8 bits from a 16-bit data, what is the first recommended operation?",
+                    options: ["Left shift by 8 bits", "Logical AND with 0xFF00", "Bitwise OR with 0x00FF", "Right shift by 8 bits"],
+                    correct: 3,
+                    explanation: "Right shifting by 8 bits (data >> 8) directly moves the upper 8 bits down to the lower byte position in one operation, making them immediately usable. While AND with 0xFF00 isolates the upper bits, they remain in the upper position and still require a right shift afterward."
+                },
+                {
+                    question: "What is the typical size of a short int data type?",
+                    options: ["1 byte", "2 bytes", "4 bytes", "8 bytes"],
+                    correct: 1,
+                    explanation: "The typical size of a short int data type is 2 bytes (16 bits) in most compilers."
+                },
+                {
+                    question: "Which data type is usually 4 bytes and primarily used for measuring things like weight, distance, or temperature on a Pico W?",
+                    options: ["long double", "char", "float", "double", "int"],
+                    correct: 2,
+                    explanation: "The float data type is typically 4 bytes and is specifically designed for measurements such as weight, distance, and temperature that require decimal precision."
+                },
+                {
+                    question: "If a register contains 0x06 and a left shift operation is performed by 1 position (0x06 << 1), what is the expected result?",
+                    options: ["0x03", "0x0C", "0x07", "0x0E"],
+                    correct: 1,
+                    explanation: "A left shift operation on 0x06 (binary: 0000 0110) by 1 bit results in 0x0C (binary: 0000 1100). This is equivalent to multiplying 6 by 2, which equals 12 (0x0C)."
+                },
+                {
+                    question: "Match the operators: & (A), || (B), | (C), && (D) with: Bitwise AND (1), Bitwise OR (2), Logical AND (3), Logical OR (4)",
+                    options: ["A→1, B→4, C→2, D→3", "A→2, B→3, C→1, D→4", "A→3, B→1, C→4, D→2", "A→4, B→2, C→3, D→1"],
+                    correct: 0,
+                    explanation: "The & and | are bitwise operators, while && and || are logical operators. Correct matching: & (Bitwise AND), || (Logical OR), | (Bitwise OR), && (Logical AND)."
+                },
+                {
+                    question: "If you declare an array int arr[5], what is the index of the last element?",
+                    options: ["0", "1", "2", "3", "4", "5"],
+                    correct: 4,
+                    explanation: "In C, array indexing starts at 0. So for an array of size 5, the indices are 0, 1, 2, 3, 4, and the last index is 4."
+                }
+            ]
+        };
+
+        let currentTopic = 'welcome';
+        let userAnswers = {};
+        let showingAnswers = false;
+
+        function renderQuiz(topic) {
+            const container = document.getElementById(topic);
+            if (!questions[topic]) return;
+
+            const questionsArray = questions[topic];
+            userAnswers[topic] = new Array(questionsArray.length).fill(null);
+
+            let html = `
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="checkAnswers('${topic}')">Submit Answers</button>
+                    <button class="btn btn-secondary" onclick="resetQuiz('${topic}')">Reset</button>
+                    <button class="btn btn-secondary" onclick="toggleAnswers('${topic}')">Toggle All Answers</button>
+                </div>
+                <div class="score-display" id="score-${topic}" style="display: none;"></div>
+            `;
+
+            questionsArray.forEach((q, index) => {
+                html += `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Question ${index + 1}</span>
+                            ${q.multipleCorrect ? '<span class="question-number" style="background: #ff9800;">Multiple Answers</span>' : ''}
+                        </div>
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((option, optIndex) => `
+                                <div class="option" onclick="selectOption('${topic}', ${index}, ${optIndex}, ${q.multipleCorrect || false})">
+                                    <input type="${q.multipleCorrect ? 'checkbox' : 'radio'}" 
+                                           name="q${topic}-${index}" 
+                                           id="q${topic}-${index}-${optIndex}"
+                                           style="margin-right: 10px;">
+                                    <label for="q${topic}-${index}-${optIndex}" style="cursor: pointer;">${option}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="answer-section" id="answer-${topic}-${index}">
+                            <div class="answer-label">Correct Answer: ${
+                                Array.isArray(q.correct) 
+                                    ? q.correct.map(i => q.options[i]).join(', ')
+                                    : q.options[q.correct]
+                            }</div>
+                            <div class="explanation">${q.explanation}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderAllTopics() {
+            const container = document.getElementById('all');
+            const allQuestions = [];
+            
+            Object.keys(questions).forEach(topic => {
+                questions[topic].forEach((q, index) => {
+                    allQuestions.push({...q, topic, originalIndex: index});
+                });
+            });
+
+            // Shuffle questions
+            for (let i = allQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+            }
+
+            userAnswers['all'] = new Array(allQuestions.length).fill(null);
+
+            let html = `
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="checkAnswers('all')">Submit Answers</button>
+                    <button class="btn btn-secondary" onclick="resetQuiz('all')">Reset</button>
+                    <button class="btn btn-secondary" onclick="toggleAnswers('all')">Toggle All Answers</button>
+                </div>
+                <div class="score-display" id="score-all" style="display: none;"></div>
+            `;
+
+            allQuestions.forEach((q, index) => {
+                html += `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Question ${index + 1}</span>
+                            <span class="question-number" style="background: #764ba2;">${q.topic.toUpperCase()}</span>
+                            ${q.multipleCorrect ? '<span class="question-number" style="background: #ff9800;">Multiple Answers</span>' : ''}
+                        </div>
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((option, optIndex) => `
+                                <div class="option" onclick="selectOption('all', ${index}, ${optIndex}, ${q.multipleCorrect || false})">
+                                    <input type="${q.multipleCorrect ? 'checkbox' : 'radio'}" 
+                                           name="q-all-${index}" 
+                                           id="q-all-${index}-${optIndex}"
+                                           style="margin-right: 10px;">
+                                    <label for="q-all-${index}-${optIndex}" style="cursor: pointer;">${option}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="answer-section" id="answer-all-${index}">
+                            <div class="answer-label">Correct Answer: ${
+                                Array.isArray(q.correct) 
+                                    ? q.correct.map(i => q.options[i]).join(', ')
+                                    : q.options[q.correct]
+                            }</div>
+                            <div class="explanation">${q.explanation}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            container.dataset.questions = JSON.stringify(allQuestions);
+        }
+
+        function selectOption(topic, questionIndex, optionIndex, isMultiple) {
+            const checkbox = document.getElementById(`q${topic === 'all' ? '-all' : topic}-${questionIndex}-${optionIndex}`);
+            
+            if (isMultiple) {
+                checkbox.checked = !checkbox.checked;
+                
+                if (!Array.isArray(userAnswers[topic][questionIndex])) {
+                    userAnswers[topic][questionIndex] = [];
+                }
+                
+                if (checkbox.checked) {
+                    if (!userAnswers[topic][questionIndex].includes(optionIndex)) {
+                        userAnswers[topic][questionIndex].push(optionIndex);
+                    }
+                } else {
+                    userAnswers[topic][questionIndex] = userAnswers[topic][questionIndex].filter(i => i !== optionIndex);
+                }
+            } else {
+                // Clear other radio buttons
+                const allOptions = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${questionIndex}"]`);
+                allOptions.forEach(opt => {
+                    opt.checked = false;
+                    opt.parentElement.classList.remove('selected');
+                });
+                
+                checkbox.checked = true;
+                checkbox.parentElement.classList.add('selected');
+                userAnswers[topic][questionIndex] = optionIndex;
+            }
+        }
+
+        function checkAnswers(topic) {
+            const questionsArray = topic === 'all' 
+                ? JSON.parse(document.getElementById('all').dataset.questions)
+                : questions[topic];
+            
+            let correct = 0;
+            let total = questionsArray.length;
+
+            questionsArray.forEach((q, index) => {
+                const userAnswer = userAnswers[topic][index];
+                const correctAnswer = q.correct;
+                let isCorrect = false;
+
+                if (Array.isArray(correctAnswer)) {
+                    isCorrect = Array.isArray(userAnswer) && 
+                                userAnswer.length === correctAnswer.length &&
+                                userAnswer.every(ans => correctAnswer.includes(ans));
+                } else {
+                    isCorrect = userAnswer === correctAnswer;
+                }
+
+                if (isCorrect) correct++;
+
+                // Show visual feedback
+                const optionDivs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
+                optionDivs.forEach((input, optIndex) => {
+                    const optionDiv = input.parentElement;
+                    optionDiv.classList.remove('correct', 'incorrect');
+                    
+                    if (Array.isArray(correctAnswer)) {
+                        if (correctAnswer.includes(optIndex)) {
+                            optionDiv.classList.add('correct');
+                        } else if (Array.isArray(userAnswer) && userAnswer.includes(optIndex)) {
+                            optionDiv.classList.add('incorrect');
+                        }
+                    } else {
+                        if (optIndex === correctAnswer) {
+                            optionDiv.classList.add('correct');
+                        } else if (optIndex === userAnswer) {
+                            optionDiv.classList.add('incorrect');
+                        }
+                    }
+                });
+
+                document.getElementById(`answer-${topic}-${index}`).classList.add('show');
+            });
+
+            const scoreDisplay = document.getElementById(`score-${topic}`);
+            const percentage = ((correct / total) * 100).toFixed(1);
+            scoreDisplay.innerHTML = `
+                Score: ${correct} / ${total} (${percentage}%)
+                ${percentage >= 80 ? '🎉 Excellent!' : percentage >= 60 ? '👍 Good job!' : '💪 Keep practicing!'}
+            `;
+            scoreDisplay.style.display = 'block';
+            
+            showingAnswers = true;
+        }
+
+        function resetQuiz(topic) {
+            const questionsArray = topic === 'all' 
+                ? JSON.parse(document.getElementById('all').dataset.questions)
+                : questions[topic];
+            
+            userAnswers[topic] = new Array(questionsArray.length).fill(null);
+            
+            questionsArray.forEach((q, index) => {
+                const optionDivs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
+                optionDivs.forEach(input => {
+                    input.checked = false;
+                    input.parentElement.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                document.getElementById(`answer-${topic}-${index}`).classList.remove('show');
+            });
+
+            const scoreDisplay = document.getElementById(`score-${topic}`);
+            if (scoreDisplay) {
+                scoreDisplay.style.display = 'none';
+            }
+            
+            showingAnswers = false;
+        }
+
+        function toggleAnswers(topic) {
+            const questionsArray = topic === 'all' 
+                ? JSON.parse(document.getElementById('all').dataset.questions)
+                : questions[topic];
+            
+            showingAnswers = !showingAnswers;
+            
+            questionsArray.forEach((q, index) => {
+                const answerSection = document.getElementById(`answer-${topic}-${index}`);
+                if (showingAnswers) {
+                    answerSection.classList.add('show');
+                } else {
+                    answerSection.classList.remove('show');
+                }
+            });
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const topic = this.dataset.topic;
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.quiz-mode').forEach(mode => mode.classList.remove('active'));
+                document.getElementById(topic).classList.add('active');
+                
+                currentTopic = topic;
+                showingAnswers = false;
+            });
+        });
+
+        // Initialize quizzes
+        renderQuiz('intro');
+        renderQuiz('c');
+        renderAllTopics();
+    </script>
+</body>
+</html>
