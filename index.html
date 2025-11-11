@@ -282,7 +282,7 @@
                     <p>📚 Select a topic from the tabs above to start practicing.</p>
                     <p>✅ Choose "All Topics" for a comprehensive test covering everything.</p>
                     <p>🎯 Track your progress and review explanations for each question.</p>
-                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Testing (20) + Optimise (9)</p>
+                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Testing (20) + Optimise (9) + Sensor Fusion (9)</p>
                 </div>
             </div>
 
@@ -312,12 +312,7 @@
             <div class="quiz-mode" id="os"></div>
             <div class="quiz-mode" id="testing"></div>
             <div class="quiz-mode" id="optimise"></div>
-            <div class="quiz-mode" id="sensor">
-                <div class="welcome-message">
-                    <h2>Sensor Fusion Questions Coming Soon</h2>
-                    <p>Add your Sensor Fusion questions to populate this section.</p>
-                </div>
-            </div>
+            <div class="quiz-mode" id="sensor"></div>
         </div>
     </div>
 
@@ -1075,7 +1070,72 @@
                     explanation: "Hardware timer units provide precise timing measurements without software overhead. GPIO pins toggled in the ISR and monitored with an oscilloscope allow external, non-intrusive timing measurement. OS Clock APIs and printf statements introduce significant timing overhead and are unsuitable for accurate interrupt timing measurements.",
                     multipleCorrect: true
                 }
+            ],
+            sensor: [
+                {
+                    question: "Raspberry Pi's GPIO pins can support which of the following:",
+                    options: ["Analogue output only", "Digital input and output", "Analogue and digital input and output", "Analogue input and digital output"],
+                    correct: 1,
+                    explanation: "The Raspberry Pi GPIO pins only support digital input and output. They do not natively support analogue functionality; external ADCs or DACs are required for analogue signals."
+                },
+                {
+                    question: "A typical sensor will perform signal conditioning before sending out the signal in a digital format. Which of the following does not occur within a sensor module?",
+                    options: ["Digital-to-Analog Convertor", "Amplification", "Analog-to-Digital Convertor", "Control logic"],
+                    correct: 0,
+                    explanation: "Typical sensor modules perform amplification, control logic, and analog-to-digital conversion before outputting digital signals. Digital-to-Analog conversion is not performed within a sensor module preparing a signal for microcontroller input."
+                },
+                {
+                    question: "Which of the following is not typically used to detect change in a sensor?",
+                    image: "conductive.jpg",
+                    options: ["Area of conductive plates", "Material of dielectric", "Distance between conductive plates", "Material of conductive plates"],
+                    correct: 3,
+                    explanation: "Capacitive sensors detect change using area, dielectric material, and distance between plates. The material of the conductive plates is generally not a changing or detected variable."
+                },
+                {
+                    question: "Which of the following is NOT a stimulus.",
+                    options: ["Pressure", "Sound", "Displacement", "Contempt"],
+                    correct: 3,
+                    explanation: "Contempt is an emotion and not a measurable physical stimulus; sensors respond to stimuli like pressure, sound, or displacement."
+                },
+                {
+                    question: "Which of the following is not part of a Servo Motor (e.g. SG90)?",
+                    options: ["motor", "inductor", "potentiometer", "microcontroller"],
+                    correct: 1,
+                    explanation: "Standard servo motors like the SG90 include a motor, gear, potentiometer for position, and microcontroller for control—but not an inductor."
+                },
+                {
+                    question: "The following sensor uses capacitance to detect water level. Which change in factor are we trying to detect?",
+                    image: "sensor.jpg",
+                    options: ["Distance between Dielectric", "Area of conductive plates", "Distance between conductive plates", "Material of conductive plates."],
+                    correct: 1,
+                    explanation: "Capacitive water level sensors detect changes in the area of the conductive plates that are immersed in the water, affecting the measurable capacitance."
+                },
+                {
+                    question: "Select the statement that is true for the logic interface for these devices. ",
+                    image: "device.png",
+                    options: [
+                        '"Raspberry Pi GPIO" can be an Output and "Sensor Pin" can be an Input',
+                        '"Raspberry Pi GPIO" can be an Input and "Sensor Pin" can be an Output',
+                        'Both these devices cannot "talk" to each other.',
+                        'Both "Raspberry Pi GPIO" and "Sensor Pin" can be an Input and Output'
+                    ],
+                    correct: 0,
+                    explanation: "For typical embedded sensor interfacing, the Raspberry Pi GPIO may output a signal (control or power), and the sensor pin may act as input, receiving that signal."
+                },
+                {
+                    question: "A __________ is a device that converts energy from one form to another. Usually a __________ converts a signal in one form of energy to a signal in another. (Choose the best answer)",
+                    options: ["transducer, transducer", "transformer, transducer", "convertor, transducer", "thermophile, thermometer"],
+                    correct: 0,
+                    explanation: "A transducer converts energy between forms, and also converts signals between different forms of energy, making both blanks 'transducer' in the classic technical definition."
+                },
+                {
+                    question: "A sensor is a device that receives a stimulus and responds with an electrical signal. Electrical here means a signal that can be channeled, amplified, and modified by electronic devices. Which of the following is NOT a type of response that the microcontroller can handle?",
+                    options: ["Acceleration", "Induction", "Power", "Charge"],
+                    correct: 0,
+                    explanation: "Microcontrollers typically handle voltage, current, charge, and induction as signal types. Acceleration is a physical quantity measured by sensors; the microcontroller does not directly process 'acceleration signals.'"
+                }
             ]
+
         };
 
         let currentTopic = 'welcome';
@@ -1099,6 +1159,9 @@
             `;
 
             questionsArray.forEach((q, index) => {
+                // Optional image HTML - only shows if q.image exists
+                const imageHTML = q.image ? `<img src="${q.image}" alt="Question diagram" style="max-width: 100%; max-height: 400px; margin: 15px 0; border-radius: 8px; display: block;">` : '';
+                
                 html += `
                     <div class="question-card">
                         <div class="question-header">
@@ -1106,13 +1169,14 @@
                             ${q.multipleCorrect ? '<span class="question-number" style="background: #ff9800;">Multiple Answers</span>' : ''}
                         </div>
                         <div class="question-text">${q.question}</div>
+                        ${imageHTML}
                         <div class="options">
                             ${q.options.map((option, optIndex) => `
                                 <div class="option" onclick="selectOption('${topic}', ${index}, ${optIndex}, ${q.multipleCorrect || false})">
                                     <input type="${q.multipleCorrect ? 'checkbox' : 'radio'}" 
-                                           name="q${topic}-${index}" 
-                                           id="q${topic}-${index}-${optIndex}"
-                                           style="margin-right: 10px;">
+                                        name="q${topic}-${index}" 
+                                        id="q${topic}-${index}-${optIndex}"
+                                        style="margin-right: 10px;">
                                     <label for="q${topic}-${index}-${optIndex}" style="cursor: pointer;">${option}</label>
                                 </div>
                             `).join('')}
@@ -1128,6 +1192,7 @@
                     </div>
                 `;
             });
+
 
             container.innerHTML = html;
         }
@@ -1350,6 +1415,7 @@
         renderQuiz('os');
         renderQuiz('testing');
         renderQuiz('optimise');
+        renderQuiz('sensor');
         renderAllTopics();
     </script>
 </body>
