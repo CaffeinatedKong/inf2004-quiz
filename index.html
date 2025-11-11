@@ -250,7 +250,27 @@
             line-height: 1.8;
             margin-bottom: 10px;
         }
-
+        .fill-inputs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0 6px;
+        }
+        .fill-input {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-width: 140px;
+            font-size: 14px;
+        }
+        .fill-input.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+        .fill-input.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
         @media (max-width: 768px) {
             .tabs {
                 flex-wrap: wrap;
@@ -261,6 +281,7 @@
                 min-width: 120px;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -294,7 +315,7 @@
                     <p>✅ Choose "All Topics" for a comprehensive test covering everything.</p>
                     <p>🎯 Track your progress and review explanations for each question.</p>
                     <p>🔀 Use the Shuffle button to randomize questions and answer options!</p>
-                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Testing (20) + Optimise (9) + Sensor Fusion (9)</p>
+                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Interrupts (13) + Timer and PWM (8) + Embedded OS (10) + Testing (20) + Optimise (9) + Sensor Fusion (9)</p>
                 </div>
             </div>
 
@@ -716,6 +737,195 @@
                     options: ["True", "False"],
                     correct: 1,
                     explanation: "False. UART doesn't use addressing as it's a point-to-point protocol. Protocols like I2C require slave addresses for multi-device communication."
+                }
+            ],
+            interrupts: [
+                {
+                    question: "Level-triggered interrupts can be falling or rising edge.",
+                    options: ["True", "False"],
+                    correct: 1,
+                    explanation: "False. Level-triggered interrupts respond to a constant logic level (high or low), while edge-triggered interrupts react to rising/falling transitions."
+                },
+                {
+                    // FILL-IN-THE-BLANK VERSION
+                    type: "fill",
+                    question: "A CPU can ________________ data onto a stack and later it must ____________________ it off again.",
+                    answers: ["push", "pop"], // order matters
+                    explanation: "The correct terms are push (to place data on the stack) and pop (to remove it)."
+                },
+                {
+                    question: "Why should you clear the interrupt flag before exiting an ISR?",
+                    options: [
+                        "To prevent the ISR immediately re-running",
+                        "Because ISRs cannot use global variables",
+                        "To tell the user the code has ended",
+                        "To tidy up the stack before you leave"
+                    ],
+                    correct: 0,
+                    explanation: "If the interrupt flag is not cleared, the CPU will see the interrupt still pending and re-enter the ISR repeatedly."
+                },
+                {
+                    question: "What is the purpose of the interrupt vector table (IVT)?",
+                    options: [
+                        "To store the code that causes interrupts to happen",
+                        "To hold the address of ISRs which can handle interrupts",
+                        "To store code that prevents interrupts",
+                        "To store the actual ISR functions"
+                    ],
+                    correct: 1,
+                    explanation: "The IVT stores pointers to the ISRs, not the code itself."
+                },
+                {
+                    question: "An interrupt is always a bad thing for a CPU.",
+                    options: ["True", "False"],
+                    correct: 1,
+                    explanation: "Interrupts allow the CPU to respond quickly to events. They are essential for real-time systems."
+                },
+                {
+                    question: "Inside a microprocessor, a 'timer' is:",
+                    options: [
+                        "An ISR triggered by the RTC",
+                        "Software that implements a stopwatch function",
+                        "A counter that can run down or up",
+                        "A built-in clock unit"
+                    ],
+                    correct: 2,
+                    explanation: "Timers are hardware counters driven by a clock source."
+                },
+                {
+                    question: "ISR code should ideally be:",
+                    options: [
+                        "written with a proper user interface",
+                        "only executed at boot time",
+                        "small and efficient",
+                        "written in a high-level language"
+                    ],
+                    correct: 2,
+                    explanation: "ISRs should run quickly to avoid blocking other processes."
+                },
+                {
+                    question: "An RTC crystal or oscillator allows a CPU to:",
+                    options: [
+                        "Connect to peripherals that also have an RTC",
+                        "Generate its main system clock",
+                        "Improve the timing of its ISRs",
+                        "Provide a signal that can be exactly divided into 1 second"
+                    ],
+                    correct: 3,
+                    explanation: "A 32.768 kHz crystal divides cleanly into 1 second."
+                },
+                {
+                    question: "Interrupts are usually really simple to debug.",
+                    options: ["True", "False"],
+                    correct: 1,
+                    explanation: "Interrupts execute asynchronously, making debugging more complex."
+                },
+                {
+                    question: "The SP (Stack Pointer) is:",
+                    options: [
+                        "A variable that contains temporary data",
+                        "A register that indicates the end of the stack",
+                        "A placeholder to remember stack memory",
+                        "The stack push indicator"
+                    ],
+                    correct: 1,
+                    explanation: "The stack pointer register holds the address of the current top of the stack."
+                },
+                {
+                    question: "The watchdog timer (WDT) is designed to restart a system if the software crashes.",
+                    options: ["True", "False"],
+                    correct: 0,
+                    explanation: "If not periodically reset ('kicked'), the watchdog forces a reboot."
+                },
+                {
+                    question: "If events occur very frequently with very short intervals, the best method is:",
+                    options: ["Polling", "Interrupts", "Nested Interrupts", "Masking"],
+                    correct: 1,
+                    explanation: "Interrupts allow immediate response, avoiding missed events."
+                },
+                {
+                    question: "In the lecture, we defined the utilisation for an interrupt as u = (h+c)/T. In general, utilisation is the percentage of time when the processor is busy and h is the timing overhead for handling the interrupt. Suppose the inter-arrival time between two events is 500 cycles and the processor needs 18 cycles for either a pop or a push. For an ISR which requires 20 cycles for completion, what is its utilisation?",
+                    options: ["11.2", "7.6", "11.6", "4"],
+                    correct: 0,
+                    explanation: "T=500 cycles (inter-arrival time), Push cost = 18 cycles, Pop cost = 18 cycles, overhead (h) = 36, execution time (c) = 20, so u=(36+20)/500=0.112=11.2%."
+                }
+            ],
+            timers: [
+                {
+                    question: "An RTC crystal or oscillator allows a CPU to:",
+                    options: [
+                        "connect to peripherals that also have an RTC",
+                        "improve the timing of its ISRs",
+                        "directly drive its main system clock",
+                        "provide a signal that can be exactly divided into 1 second"
+                    ],
+                    correct: 3,
+                    explanation: "RTCs use a precise crystal (commonly 32.768 kHz) that divides cleanly down to 1 Hz, allowing accurate timekeeping independent of the main system clock."
+                },
+                {
+                    question: "Inside a microcontroller, a 'timer' is a/an:",
+                    options: [
+                        "software that implements a stopwatch function",
+                        "built-in clock unit",
+                        "ISR triggered by the RTC",
+                        "counter that can run down or up"
+                    ],
+                    correct: 3,
+                    explanation: "A timer module is a hardware counter. It increments or decrements based on the input clock and can trigger interrupts or events when reaching limits."
+                },
+                {
+                    type: "fill",
+                    image: "pwn_signal.png",
+                    question: "'A' must be __________ to make a 40% duty-cycle, if 'B' is 30 ms. (include units)",
+                    answers: ["75ms"],
+                    explanation: "Duty Cycle = B/A → A = B / 0.4 = 30 ms / 0.4 = 75 ms."
+                },
+                {
+                    type: "fill",
+                    question: "A __________ count is used to obtain a 1 second timer from a 30 MHz clock.",
+                    answers: ["30000000"],
+                    explanation: "Count = Frequency × Time = 30,000,000 × 1 = 30,000,000."
+                },
+                {
+                    question: "The watchdog timer (WDT) is designed to restart a system if the software crashes.",
+                    options: ["True", "False"],
+                    correct: 0,
+                    explanation: "If the software stops refreshing ('kicking') the watchdog, the WDT resets the MCU to recover from lock-ups."
+                },
+                {
+                    question: "Given the behaviour: (1) Counter wraps around to the maximum after reaching zero, (2) A flag is set when it wraps. Timer_32 is operating in:",
+                    image: "free_running_timer.png",
+                    options: [
+                        "Periodic Timer Mode",
+                        "Continuous Mode",
+                        "Free Running Mode",
+                        "One-shot Mode"
+                    ],
+                    correct: 2,
+                    explanation: "Free Running Mode allows the timer to continuously roll over without stopping or reloading externally."
+                },
+                {
+                    question: "A 1 Hz clock is:",
+                    options: [
+                        "used by the Real Time Clock",
+                        "generated using a counter that counts till 2^15",
+                        "directly used as the main clock",
+                        "generated using a crystal that emits a signal at 32.768 kHz"
+                    ],
+                    correct: [0,1,3], // multiple correct answers supported
+                    explanation: "A 32.768 kHz crystal divides cleanly by 2^15 to produce a 1 Hz tick, which is used by the RTC.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "The count-down timer free-running mode means:",
+                    options: [
+                        "Counter wraps back around to 0 after hitting a maximum value",
+                        "Counter counts down to 0 then begins counting up",
+                        "Counter wraps back around to maximum after counting down to 0",
+                        "Counter counts down from maximum to 0 and then stops automatically"
+                    ],
+                    correct: 2,
+                    explanation: "Free-running countdown timers automatically reload the maximum value when they reach zero and continue running indefinitely."
                 }
             ],
             os: [
@@ -1167,21 +1377,24 @@
 
         // Shuffle options while tracking correct answer
         function shuffleQuestionOptions(question) {
-            const shuffled = {...question};
-            const optionsWithIndices = question.options.map((opt, idx) => ({text: opt, originalIndex: idx}));
+            if (question.type === 'fill' || !Array.isArray(question.options)) {
+                return { ...question };
+            }
+
+            const shuffled = { ...question };
+            const optionsWithIndices = question.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
             const shuffledOptions = shuffleArray(optionsWithIndices);
-            
+
             shuffled.options = shuffledOptions.map(opt => opt.text);
-            
-            // Update correct answer index/indices
+
             if (Array.isArray(question.correct)) {
-                shuffled.correct = question.correct.map(correctIdx => 
+                shuffled.correct = question.correct.map(correctIdx =>
                     shuffledOptions.findIndex(opt => opt.originalIndex === correctIdx)
                 );
             } else {
                 shuffled.correct = shuffledOptions.findIndex(opt => opt.originalIndex === question.correct);
             }
-            
+
             return shuffled;
         }
 
@@ -1190,7 +1403,9 @@
             if (!questions[topic]) return;
 
             const questionsArray = shuffledQuestions[topic] || questions[topic];
-            userAnswers[topic] = new Array(questionsArray.length).fill(null);
+
+            // initialize userAnswers for this topic
+            userAnswers[topic] = questionsArray.map(q => q.type === 'fill' ? new Array((q.answers?.length || 1)).fill('') : null);
 
             let html = `
                 <div class="controls">
@@ -1204,15 +1419,21 @@
 
             questionsArray.forEach((q, index) => {
                 const imageHTML = q.image ? `<img src="${q.image}" alt="Question diagram" style="max-width: 100%; max-height: 400px; margin: 15px 0; border-radius: 8px; display: block;">` : '';
-                
-                html += `
-                    <div class="question-card">
-                        <div class="question-header">
-                            <span class="question-number">Question ${index + 1}</span>
-                            ${q.multipleCorrect ? '<span class="question-number" style="background: #ff9800;">Multiple Answers</span>' : ''}
-                        </div>
-                        <div class="question-text">${q.question}</div>
-                        ${imageHTML}
+
+                // Build options area (MCQ vs FILL)
+                let optionsHTML = '';
+                if (q.type === 'fill') {
+                    const blanks = q.answers?.length || 1;
+                    const inputs = Array.from({ length: blanks }, (_, i) => `
+                        <input class="fill-input" 
+                            id="fill-${topic}-${index}-${i}"
+                            type="text" 
+                            placeholder="Answer ${i + 1}" 
+                            oninput="recordFill('${topic}', ${index}, ${i}, this.value)">
+                    `).join('');
+                    optionsHTML = `<div class="fill-inputs">${inputs}</div>`;
+                } else {
+                    optionsHTML = `
                         <div class="options">
                             ${q.options.map((option, optIndex) => `
                                 <div class="option" onclick="selectOption('${topic}', ${index}, ${optIndex}, ${q.multipleCorrect || false})">
@@ -1224,13 +1445,25 @@
                                 </div>
                             `).join('')}
                         </div>
+                    `;
+                }
+
+                const answerText = q.type === 'fill'
+                    ? q.answers.join(', ')
+                    : (Array.isArray(q.correct) ? q.correct.map(i => q.options[i]).join(', ') : q.options[q.correct]);
+
+                html += `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Question ${index + 1}</span>
+                            ${q.multipleCorrect ? '<span class="question-number" style="background: #ff9800;">Multiple Answers</span>' : ''}
+                        </div>
+                        <div class="question-text">${q.question}</div>
+                        ${imageHTML}
+                        ${optionsHTML}
                         <div class="answer-section" id="answer-${topic}-${index}">
-                            <div class="answer-label">Correct Answer: ${
-                                Array.isArray(q.correct) 
-                                    ? q.correct.map(i => q.options[i]).join(', ')
-                                    : q.options[q.correct]
-                            }</div>
-                            <div class="explanation">${q.explanation}</div>
+                            <div class="answer-label">Correct Answer: ${answerText}</div>
+                            <div class="explanation">${q.explanation || ''}</div>
                         </div>
                     </div>
                 `;
@@ -1239,42 +1472,49 @@
             container.innerHTML = html;
         }
 
+        function recordFill(topic, qIndex, blankIndex, value) {
+            if (!Array.isArray(userAnswers[topic][qIndex])) {
+                userAnswers[topic][qIndex] = [];
+            }
+            userAnswers[topic][qIndex][blankIndex] = value;
+        }
+
+        // 2) Topic-level shuffle that respects fill-in questions
         function shuffleQuiz(topic) {
             // Shuffle question order
             const shuffledQuestionsArray = shuffleArray(questions[topic]);
-            
-            // Shuffle options within each question
-            shuffledQuestions[topic] = shuffledQuestionsArray.map(q => shuffleQuestionOptions(q));
-            
-            // Re-render the quiz with shuffled questions and options
+
+            // Shuffle options only for MCQs
+            shuffledQuestions[topic] = shuffledQuestionsArray.map(q =>
+                (q.type === 'fill' ? { ...q } : shuffleQuestionOptions(q))
+            );
+
+            // Re-render + reset
             renderQuiz(topic);
-            
-            // Reset answers and hide previous results
             showingAnswers = false;
         }
+
 
         function renderAllTopics() {
             const container = document.getElementById('all');
             const allQuestions = [];
-            
+
             Object.keys(questions).forEach(topic => {
                 questions[topic].forEach((q, index) => {
                     allQuestions.push({...q, topic, originalIndex: index});
                 });
             });
 
-            // Shuffle questions
             const shuffled = shuffleArray(allQuestions);
-            
-            // Shuffle options within each question
             const finalShuffled = shuffled.map(q => {
+                if (q.type === 'fill') return q; // no option shuffling needed
                 const shuffledQ = shuffleQuestionOptions(q);
                 shuffledQ.topic = q.topic;
                 shuffledQ.originalIndex = q.originalIndex;
                 return shuffledQ;
             });
 
-            userAnswers['all'] = new Array(finalShuffled.length).fill(null);
+            userAnswers['all'] = finalShuffled.map(q => q.type === 'fill' ? new Array((q.answers?.length || 1)).fill('') : null);
 
             let html = `
                 <div class="controls">
@@ -1287,6 +1527,37 @@
             `;
 
             finalShuffled.forEach((q, index) => {
+                let optionsHTML = '';
+                if (q.type === 'fill') {
+                    const blanks = q.answers?.length || 1;
+                    const inputs = Array.from({ length: blanks }, (_, i) => `
+                        <input class="fill-input" 
+                            id="fill-all-${index}-${i}"
+                            type="text" 
+                            placeholder="Answer ${i + 1}" 
+                            oninput="recordFill('all', ${index}, ${i}, this.value)">
+                    `).join('');
+                    optionsHTML = `<div class="fill-inputs">${inputs}</div>`;
+                } else {
+                    optionsHTML = `
+                        <div class="options">
+                            ${q.options.map((option, optIndex) => `
+                                <div class="option" onclick="selectOption('all', ${index}, ${optIndex}, ${q.multipleCorrect || false})">
+                                    <input type="${q.multipleCorrect ? 'checkbox' : 'radio'}" 
+                                        name="q-all-${index}" 
+                                        id="q-all-${index}-${optIndex}"
+                                        style="margin-right: 10px;">
+                                    <label for="q-all-${index}-${optIndex}" style="cursor: pointer;">${option}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                const answerText = q.type === 'fill'
+                    ? q.answers.join(', ')
+                    : (Array.isArray(q.correct) ? q.options[q.correct[0]] : q.options[q.correct]);
+
                 html += `
                     <div class="question-card">
                         <div class="question-header">
@@ -1295,24 +1566,13 @@
                             ${q.multipleCorrect ? '<span class="question-number" style="background: #ff9800;">Multiple Answers</span>' : ''}
                         </div>
                         <div class="question-text">${q.question}</div>
-                        <div class="options">
-                            ${q.options.map((option, optIndex) => `
-                                <div class="option" onclick="selectOption('all', ${index}, ${optIndex}, ${q.multipleCorrect || false})">
-                                    <input type="${q.multipleCorrect ? 'checkbox' : 'radio'}" 
-                                           name="q-all-${index}" 
-                                           id="q-all-${index}-${optIndex}"
-                                           style="margin-right: 10px;">
-                                    <label for="q-all-${index}-${optIndex}" style="cursor: pointer;">${option}</label>
-                                </div>
-                            `).join('')}
-                        </div>
+                        ${optionsHTML}
                         <div class="answer-section" id="answer-all-${index}">
-                            <div class="answer-label">Correct Answer: ${
-                                Array.isArray(q.correct) 
-                                    ? q.correct.map(i => q.options[i]).join(', ')
-                                    : q.options[q.correct]
-                            }</div>
-                            <div class="explanation">${q.explanation}</div>
+                            <div class="answer-label">Correct Answer: ${q.type === 'fill'
+                                ? q.answers.join(', ')
+                                : (Array.isArray(q.correct) ? q.correct.map(i => q.options[i]).join(', ') : q.options[q.correct])}
+                            </div>
+                            <div class="explanation">${q.explanation || ''}</div>
                         </div>
                     </div>
                 `;
@@ -1321,6 +1581,7 @@
             container.innerHTML = html;
             container.dataset.questions = JSON.stringify(finalShuffled);
         }
+
 
         function reshuffleAllTopics() {
             renderAllTopics();
@@ -1361,45 +1622,61 @@
             const questionsArray = topic === 'all' 
                 ? JSON.parse(document.getElementById('all').dataset.questions)
                 : (shuffledQuestions[topic] || questions[topic]);
-            
+
             let correct = 0;
-            let total = questionsArray.length;
+            const total = questionsArray.length;
 
             questionsArray.forEach((q, index) => {
-                const userAnswer = userAnswers[topic][index];
-                const correctAnswer = q.correct;
                 let isCorrect = false;
 
-                if (Array.isArray(correctAnswer)) {
-                    isCorrect = Array.isArray(userAnswer) && 
-                                userAnswer.length === correctAnswer.length &&
-                                userAnswer.every(ans => correctAnswer.includes(ans));
+                if (q.type === 'fill') {
+                    const given = (userAnswers[topic][index] || []).map(s => (s || '').trim().toLowerCase());
+                    const expected = (q.answers || []).map(s => s.trim().toLowerCase());
+                    // exact positional match
+                    isCorrect = (given.length === expected.length) && given.every((g, i) => g === expected[i]);
+
+                    // color inputs
+                    expected.forEach((_, i) => {
+                        const el = document.getElementById(`fill-${topic}-${index}-${i}`);
+                        if (!el) return;
+                        el.classList.remove('correct', 'incorrect');
+                        if ((given[i] || '') === expected[i]) el.classList.add('correct');
+                        else el.classList.add('incorrect');
+                    });
                 } else {
-                    isCorrect = userAnswer === correctAnswer;
+                    const userAnswer = userAnswers[topic][index];
+                    const correctAnswer = q.correct;
+                    if (Array.isArray(correctAnswer)) {
+                        isCorrect = Array.isArray(userAnswer) && 
+                                    userAnswer.length === correctAnswer.length &&
+                                    userAnswer.every(ans => correctAnswer.includes(ans));
+                    } else {
+                        isCorrect = userAnswer === correctAnswer;
+                    }
+
+                    // decorate MCQ options
+                    const inputs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
+                    inputs.forEach((input, optIndex) => {
+                        const optionDiv = input.parentElement;
+                        optionDiv.classList.remove('correct', 'incorrect');
+
+                        if (Array.isArray(q.correct)) {
+                            if (q.correct.includes(optIndex)) {
+                                optionDiv.classList.add('correct');
+                            } else if (Array.isArray(userAnswers[topic][index]) && userAnswers[topic][index].includes(optIndex)) {
+                                optionDiv.classList.add('incorrect');
+                            }
+                        } else {
+                            if (optIndex === q.correct) {
+                                optionDiv.classList.add('correct');
+                            } else if (optIndex === userAnswers[topic][index]) {
+                                optionDiv.classList.add('incorrect');
+                            }
+                        }
+                    });
                 }
 
                 if (isCorrect) correct++;
-
-                const optionDivs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
-                optionDivs.forEach((input, optIndex) => {
-                    const optionDiv = input.parentElement;
-                    optionDiv.classList.remove('correct', 'incorrect');
-                    
-                    if (Array.isArray(correctAnswer)) {
-                        if (correctAnswer.includes(optIndex)) {
-                            optionDiv.classList.add('correct');
-                        } else if (Array.isArray(userAnswer) && userAnswer.includes(optIndex)) {
-                            optionDiv.classList.add('incorrect');
-                        }
-                    } else {
-                        if (optIndex === correctAnswer) {
-                            optionDiv.classList.add('correct');
-                        } else if (optIndex === userAnswer) {
-                            optionDiv.classList.add('incorrect');
-                        }
-                    }
-                });
-
                 document.getElementById(`answer-${topic}-${index}`).classList.add('show');
             });
 
@@ -1410,34 +1687,51 @@
                 ${percentage >= 80 ? '🎉 Excellent!' : percentage >= 60 ? '👍 Good job!' : '💪 Keep practicing!'}
             `;
             scoreDisplay.style.display = 'block';
-            
             showingAnswers = true;
         }
+
 
         function resetQuiz(topic) {
             const questionsArray = topic === 'all' 
                 ? JSON.parse(document.getElementById('all').dataset.questions)
                 : (shuffledQuestions[topic] || questions[topic]);
-            
-            userAnswers[topic] = new Array(questionsArray.length).fill(null);
-            
+
+            userAnswers[topic] = questionsArray.map(q => q.type === 'fill' ? new Array((q.answers?.length || 1)).fill('') : null);
+
             questionsArray.forEach((q, index) => {
-                const optionDivs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
-                optionDivs.forEach(input => {
-                    input.checked = false;
-                    input.parentElement.classList.remove('selected', 'correct', 'incorrect');
-                });
-                
-                document.getElementById(`answer-${topic}-${index}`).classList.remove('show');
+                if (q.type === 'fill') {
+                    const blanks = q.answers?.length || 1;
+                    for (let i = 0; i < blanks; i++) {
+                        const el = document.getElementById(`fill-${topic}-${index}-${i}`);
+                        if (el) {
+                            el.value = '';
+                            el.classList.remove('correct', 'incorrect');
+                        }
+                        const elAll = document.getElementById(`fill-all-${index}-${i}`);
+                        if (elAll) {
+                            elAll.value = '';
+                            elAll.classList.remove('correct', 'incorrect');
+                        }
+                    }
+                } else {
+                    const optionDivs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
+                    optionDivs.forEach(input => {
+                        input.checked = false;
+                        input.parentElement.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                }
+
+                const ansId = `answer-${topic}-${index}`;
+                const ans = document.getElementById(ansId);
+                if (ans) ans.classList.remove('show');
             });
 
             const scoreDisplay = document.getElementById(`score-${topic}`);
-            if (scoreDisplay) {
-                scoreDisplay.style.display = 'none';
-            }
-            
+            if (scoreDisplay) scoreDisplay.style.display = 'none';
+
             showingAnswers = false;
         }
+
 
         function toggleAnswers(topic) {
             const questionsArray = topic === 'all' 
@@ -1477,6 +1771,8 @@
         renderQuiz('c');
         renderQuiz('gpio');
         renderQuiz('digital');
+        renderQuiz('interrupts'); 
+        renderQuiz('timers');
         renderQuiz('os');
         renderQuiz('testing');
         renderQuiz('optimise');
