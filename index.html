@@ -213,6 +213,17 @@
             background: #e0e0e0;
         }
 
+        .btn-shuffle {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-shuffle:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         .score-display {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -282,6 +293,7 @@
                     <p>📚 Select a topic from the tabs above to start practicing.</p>
                     <p>✅ Choose "All Topics" for a comprehensive test covering everything.</p>
                     <p>🎯 Track your progress and review explanations for each question.</p>
+                    <p>🔀 Use the Shuffle button to randomize questions and answer options!</p>
                     <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Testing (20) + Optimise (9) + Sensor Fusion (9)</p>
                 </div>
             </div>
@@ -1141,12 +1153,43 @@
         let currentTopic = 'welcome';
         let userAnswers = {};
         let showingAnswers = false;
+        let shuffledQuestions = {};
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Shuffle options while tracking correct answer
+        function shuffleQuestionOptions(question) {
+            const shuffled = {...question};
+            const optionsWithIndices = question.options.map((opt, idx) => ({text: opt, originalIndex: idx}));
+            const shuffledOptions = shuffleArray(optionsWithIndices);
+            
+            shuffled.options = shuffledOptions.map(opt => opt.text);
+            
+            // Update correct answer index/indices
+            if (Array.isArray(question.correct)) {
+                shuffled.correct = question.correct.map(correctIdx => 
+                    shuffledOptions.findIndex(opt => opt.originalIndex === correctIdx)
+                );
+            } else {
+                shuffled.correct = shuffledOptions.findIndex(opt => opt.originalIndex === question.correct);
+            }
+            
+            return shuffled;
+        }
 
         function renderQuiz(topic) {
             const container = document.getElementById(topic);
             if (!questions[topic]) return;
 
-            const questionsArray = questions[topic];
+            const questionsArray = shuffledQuestions[topic] || questions[topic];
             userAnswers[topic] = new Array(questionsArray.length).fill(null);
 
             let html = `
@@ -1154,12 +1197,12 @@
                     <button class="btn btn-primary" onclick="checkAnswers('${topic}')">Submit Answers</button>
                     <button class="btn btn-secondary" onclick="resetQuiz('${topic}')">Reset</button>
                     <button class="btn btn-secondary" onclick="toggleAnswers('${topic}')">Toggle All Answers</button>
+                    <button class="btn btn-shuffle" onclick="shuffleQuiz('${topic}')">🔀 Shuffle Questions</button>
                 </div>
                 <div class="score-display" id="score-${topic}" style="display: none;"></div>
             `;
 
             questionsArray.forEach((q, index) => {
-                // Optional image HTML - only shows if q.image exists
                 const imageHTML = q.image ? `<img src="${q.image}" alt="Question diagram" style="max-width: 100%; max-height: 400px; margin: 15px 0; border-radius: 8px; display: block;">` : '';
                 
                 html += `
@@ -1193,8 +1236,21 @@
                 `;
             });
 
-
             container.innerHTML = html;
+        }
+
+        function shuffleQuiz(topic) {
+            // Shuffle question order
+            const shuffledQuestionsArray = shuffleArray(questions[topic]);
+            
+            // Shuffle options within each question
+            shuffledQuestions[topic] = shuffledQuestionsArray.map(q => shuffleQuestionOptions(q));
+            
+            // Re-render the quiz with shuffled questions and options
+            renderQuiz(topic);
+            
+            // Reset answers and hide previous results
+            showingAnswers = false;
         }
 
         function renderAllTopics() {
@@ -1208,23 +1264,29 @@
             });
 
             // Shuffle questions
-            for (let i = allQuestions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
-            }
+            const shuffled = shuffleArray(allQuestions);
+            
+            // Shuffle options within each question
+            const finalShuffled = shuffled.map(q => {
+                const shuffledQ = shuffleQuestionOptions(q);
+                shuffledQ.topic = q.topic;
+                shuffledQ.originalIndex = q.originalIndex;
+                return shuffledQ;
+            });
 
-            userAnswers['all'] = new Array(allQuestions.length).fill(null);
+            userAnswers['all'] = new Array(finalShuffled.length).fill(null);
 
             let html = `
                 <div class="controls">
                     <button class="btn btn-primary" onclick="checkAnswers('all')">Submit Answers</button>
                     <button class="btn btn-secondary" onclick="resetQuiz('all')">Reset</button>
                     <button class="btn btn-secondary" onclick="toggleAnswers('all')">Toggle All Answers</button>
+                    <button class="btn btn-shuffle" onclick="reshuffleAllTopics()">🔀 Shuffle Questions</button>
                 </div>
                 <div class="score-display" id="score-all" style="display: none;"></div>
             `;
 
-            allQuestions.forEach((q, index) => {
+            finalShuffled.forEach((q, index) => {
                 html += `
                     <div class="question-card">
                         <div class="question-header">
@@ -1257,7 +1319,12 @@
             });
 
             container.innerHTML = html;
-            container.dataset.questions = JSON.stringify(allQuestions);
+            container.dataset.questions = JSON.stringify(finalShuffled);
+        }
+
+        function reshuffleAllTopics() {
+            renderAllTopics();
+            showingAnswers = false;
         }
 
         function selectOption(topic, questionIndex, optionIndex, isMultiple) {
@@ -1278,7 +1345,6 @@
                     userAnswers[topic][questionIndex] = userAnswers[topic][questionIndex].filter(i => i !== optionIndex);
                 }
             } else {
-                // Clear other radio buttons
                 const allOptions = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${questionIndex}"]`);
                 allOptions.forEach(opt => {
                     opt.checked = false;
@@ -1294,7 +1360,7 @@
         function checkAnswers(topic) {
             const questionsArray = topic === 'all' 
                 ? JSON.parse(document.getElementById('all').dataset.questions)
-                : questions[topic];
+                : (shuffledQuestions[topic] || questions[topic]);
             
             let correct = 0;
             let total = questionsArray.length;
@@ -1314,7 +1380,6 @@
 
                 if (isCorrect) correct++;
 
-                // Show visual feedback
                 const optionDivs = document.querySelectorAll(`input[name="q${topic === 'all' ? '-all' : topic}-${index}"]`);
                 optionDivs.forEach((input, optIndex) => {
                     const optionDiv = input.parentElement;
@@ -1352,7 +1417,7 @@
         function resetQuiz(topic) {
             const questionsArray = topic === 'all' 
                 ? JSON.parse(document.getElementById('all').dataset.questions)
-                : questions[topic];
+                : (shuffledQuestions[topic] || questions[topic]);
             
             userAnswers[topic] = new Array(questionsArray.length).fill(null);
             
@@ -1377,7 +1442,7 @@
         function toggleAnswers(topic) {
             const questionsArray = topic === 'all' 
                 ? JSON.parse(document.getElementById('all').dataset.questions)
-                : questions[topic];
+                : (shuffledQuestions[topic] || questions[topic]);
             
             showingAnswers = !showingAnswers;
             
