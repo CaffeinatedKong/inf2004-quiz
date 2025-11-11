@@ -282,7 +282,7 @@
                     <p>📚 Select a topic from the tabs above to start practicing.</p>
                     <p>✅ Choose "All Topics" for a comprehensive test covering everything.</p>
                     <p>🎯 Track your progress and review explanations for each question.</p>
-                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Optimise (9)</p>
+                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Testing (20) + Optimise (9)</p>
                 </div>
             </div>
 
@@ -310,12 +310,7 @@
                 </div>
             </div>
             <div class="quiz-mode" id="os"></div>
-            <div class="quiz-mode" id="testing">
-                <div class="welcome-message">
-                    <h2>Testing Questions Coming Soon</h2>
-                    <p>Add your Testing questions to populate this section.</p>
-                </div>
-            </div>
+            <div class="quiz-mode" id="testing"></div>
             <div class="quiz-mode" id="optimise"></div>
             <div class="quiz-mode" id="sensor">
                 <div class="welcome-message">
@@ -854,6 +849,232 @@
                     explanation: "The versions that avoid the 'A * 2' multiplication operation execute fastest. On microcontrollers without hardware multiplication, shift operations (A << 1) and addition operations (A + A) are single-cycle instructions, while multiplication requires many cycles using shift-and-add algorithms.",
                     multipleCorrect: true
                 }
+            ],
+            testing: [
+                {
+                    question: "What is the purpose of boundary value analysis in embedded software testing?",
+                    options: [
+                        "To validate hardware components",
+                        "To check how the system handles extreme inputs",
+                        "To assess system security",
+                        "To test the system's user interface"
+                    ],
+                    correct: 1,
+                    explanation: "Boundary value analysis is a testing technique that focuses on testing at the boundaries or extreme edges of input values, as errors often occur at these boundary conditions in embedded systems."
+                },
+                {
+                    question: "Boundary scan testing inside a microcontroller",
+                    options: [
+                        "Can intercept signals between CPU and external pins",
+                        "Is a parallel, asynchronous test bus for the internal CPU",
+                        "Only controls the state of the external pins",
+                        "Controls the CPU alone"
+                    ],
+                    correct: 0,
+                    explanation: "Boundary scan testing (using JTAG/IEEE 1149.1 standard) allows testing of interconnections between integrated circuits by inserting test logic that can intercept and control signals between the CPU and external pins."
+                },
+                {
+                    question: "Which type of testing focuses on verifying the functionality of individual software modules or components?",
+                    options: [
+                        "Regression testing",
+                        "Integration testing",
+                        "Unit testing",
+                        "System testing"
+                    ],
+                    correct: 2,
+                    explanation: "Unit testing is a software testing method where individual units or components of software are tested in isolation to verify that each unit functions correctly on its own before integration with other components."
+                },
+                {
+                    question: "Which testing phase involves testing the entire embedded system as a whole?",
+                    options: [
+                        "Unit testing",
+                        "Performance testing",
+                        "Integration testing",
+                        "System testing"
+                    ],
+                    correct: 3,
+                    explanation: "System testing is the testing phase where the complete integrated embedded system is tested as a whole to verify that it meets all specified requirements and functions correctly in its intended environment."
+                },
+                {
+                    question: "Choose the statement that is false for hardware-based debuggers like JTAG.",
+                    options: [
+                        "Ability to observe software execution in real time",
+                        "Communicates with the debugging computer",
+                        "Breakpoint by replacing an instruction in memory with a trap",
+                        "Memory and I/O ports are accessible while running"
+                    ],
+                    correct: 2,
+                    explanation: "Hardware-based debuggers like JTAG use hardware breakpoints, not software breakpoints. Software breakpoints work by replacing instructions with trap instructions in memory, but JTAG uses dedicated hardware registers for breakpoints, allowing the original code to remain unchanged."
+                },
+                {
+                    question: "Sort the following technique from the least intrusive (#1) to the most intrusive (#4).",
+                    options: [
+                        "LED monitoring, Print statements, Hardware Breakpoints, Desk-checking",
+                        "Desk-checking, Hardware Breakpoints, LED monitoring, Print statements",
+                        "Print statements, LED monitoring, Desk-checking, Hardware Breakpoints",
+                        "Hardware Breakpoints, Desk-checking, Print statements, LED monitoring"
+                    ],
+                    correct: 1,
+                    explanation: "When ranked by the amount of code or hardware modification required, the order from least to most intrusive is: Desk-checking (no code changes), Hardware Breakpoints (uses built-in processor registers without altering code), LED monitoring (requires additional hardware wiring), and Print statements (modifies source code and affects timing)."
+                },
+                {
+                    question: "What does 'Firmware' refer to in the context of embedded systems?",
+                    options: [
+                        "Software that controls hardware devices",
+                        "Hardware components of the system",
+                        "User interface elements",
+                        "Networking protocols"
+                    ],
+                    correct: 0,
+                    explanation: "Firmware is specialized software that is programmed into the non-volatile memory of an embedded system to control and manage hardware devices. It provides low-level control and serves as the interface between hardware and higher-level software."
+                },
+                {
+                    question: "Which statement about coding errors is true for a typical software project",
+                    options: [
+                        "Good programmers don't write code with errors",
+                        "You can't find all defects, no matter what",
+                        "Good software engineering practices mean no errors in code",
+                        "Careful testing is needed to remove all errors"
+                    ],
+                    correct: 1,
+                    explanation: "It is a fundamental principle in software engineering that you cannot find all defects regardless of the testing effort. Even with the best practices and thorough testing, some defects may remain undetected. This is why software development focuses on minimizing defects rather than claiming to eliminate them all."
+                },
+                {
+                    question: "In embedded systems, what does 'real-time testing' refer to?",
+                    options: [
+                        "Testing conducted under laboratory conditions",
+                        "Testing conducted by real users",
+                        "Testing conducted using real hardware components",
+                        "Testing that assesses the system's ability to respond within a specific time frame"
+                    ],
+                    correct: 3,
+                    explanation: "Real-time testing in embedded systems refers to testing the system's ability to meet timing constraints and respond to events within specified time deadlines. This ensures the system can handle time-critical operations as required by real-time applications."
+                },
+                {
+                    question: "What is the primary goal of regression testing in embedded systems?",
+                    options: [
+                        "To identify and fix security vulnerabilities",
+                        "To validate hardware components",
+                        "To test new features and functionality",
+                        "To ensure that new changes do not introduce defects into existing functionality"
+                    ],
+                    correct: 3,
+                    explanation: "Regression testing aims to verify that recent code changes, bug fixes, or new features have not adversely affected existing functionality. It ensures system stability by catching unintended side effects of modifications."
+                },
+                {
+                    question: "What is the purpose of black-box testing in embedded systems?",
+                    options: [
+                        "Testing hardware components",
+                        "None of the above",
+                        "Testing the internal structure of the software",
+                        "Testing the functionality of the software without knowledge of its internal implementation"
+                    ],
+                    correct: 3,
+                    explanation: "Black-box testing is a testing technique that examines the functionality of software without knowledge of its internal structure, implementation, or code. Testers focus on inputs and outputs, treating the system as a 'black box'."
+                },
+                {
+                    question: "Which testing technique involves feeding predefined inputs into the system and comparing the actual outputs with expected outputs?",
+                    options: [
+                        "Black-box testing",
+                        "Functional testing",
+                        "Stress testing",
+                        "White-box testing"
+                    ],
+                    correct: 0,
+                    explanation: "Black-box testing involves testing inputs and outputs without knowledge of internal implementation. The tester feeds predefined inputs into the system and compares actual outputs with expected outputs to validate functionality."
+                },
+                {
+                    question: "For black box testing a unit under test (UUT), which of the following is true?",
+                    options: [
+                        "The test should contain all possible input values",
+                        "The UUE internal behaviour needs to be examined",
+                        "The UUE internal behaviour is not a concern",
+                        "Test values should be designed to match the code inside the UUE"
+                    ],
+                    correct: 2,
+                    explanation: "In black-box testing, the internal behavior of the Unit Under Evaluation (UUE) is not a concern. The focus is solely on testing the external behavior by examining inputs and outputs without considering the internal implementation or code structure."
+                },
+                {
+                    question: "Which aspect is the MOST important when performing debugging? (Select 2)",
+                    options: [
+                        "stabilization",
+                        "performance",
+                        "intrusiveness",
+                        "optimization"
+                    ],
+                    correct: [2, 0],
+                    explanation: "The most important aspects when debugging are intrusiveness (how much the debugging method interferes with normal system operation) and stabilization (ensuring the system remains stable during debugging). Minimizing intrusiveness helps maintain real-time behavior, while stabilization ensures reliable and reproducible debugging sessions.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "What is the primary goal of code coverage analysis in embedded software testing?",
+                    options: [
+                        "Assessing system performance",
+                        "Evaluating the completeness of test cases",
+                        "Analyzing hardware components",
+                        "Measuring the efficiency of code execution"
+                    ],
+                    correct: 1,
+                    explanation: "Code coverage analysis measures the extent to which the source code has been executed during testing. Its primary goal is to evaluate the completeness of test cases by identifying which parts of the code have been tested and which parts remain untested, helping ensure thorough testing."
+                },
+                {
+                    question: "JTAG can support which of the following (select all that apply):",
+                    options: [
+                        "Simulate code running in a virtual sandbox",
+                        "Examine the contents of memory and program FLASH",
+                        "Allow single-stepping, breakpoints and watchpoints",
+                        "Debug the CPU as well as internal peripherals"
+                    ],
+                    correct: [1, 2, 3],
+                    explanation: "JTAG (Joint Test Action Group) is a hardware debugging interface that allows examination of memory and FLASH contents, supports single-stepping, breakpoints, and watchpoints, and can debug both the CPU and internal peripherals. However, JTAG works with real hardware, not virtual sandboxes.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Test cases contain a definition of which of the following (select all that apply):",
+                    options: [
+                        "Expected behaviour",
+                        "Wanted output",
+                        "Actual behaviour",
+                        "Only correct input values"
+                    ],
+                    correct: [0, 1],
+                    explanation: "A complete test case definition includes the expected behavior (what should happen), the wanted output (desired results), and the actual behavior (what actually happens during testing). Test cases should include various input values, not just correct ones, to test edge cases and error handling.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Which testing technique focuses on testing the interactions between various software modules or components?",
+                    options: [
+                        "Unit testing",
+                        "System testing",
+                        "Integration testing",
+                        "Stress testing"
+                    ],
+                    correct: 2,
+                    explanation: "Integration testing specifically focuses on testing the interactions and interfaces between different software modules or components after they have been individually tested. It verifies that combined modules work together correctly."
+                },
+                {
+                    question: "Which debugging technique would be the most appropriate for an ISR interrupt sub routine?",
+                    options: [
+                        "hardware breakpoints",
+                        "software breakpoints",
+                        "LED monitoring",
+                        "print statement"
+                    ],
+                    correct: 0,
+                    explanation: "Hardware breakpoints are the most appropriate for debugging ISR (Interrupt Service Routine) because they are non-intrusive and don't alter timing behavior. Software breakpoints, print statements, and LED monitoring can introduce timing delays that may affect interrupt handling and mask timing-related bugs."
+                },
+                {
+                    question: "Which techniques are the most appropriate tool for measuring the timing of an interrupt. (choose 2)",
+                    options: [
+                        "Hardware timer unit",
+                        "GPIO + Oscilloscope",
+                        "API to call the OS Clock",
+                        "printf Statements"
+                    ],
+                    correct: [0, 1],
+                    explanation: "Hardware timer units provide precise timing measurements without software overhead. GPIO pins toggled in the ISR and monitored with an oscilloscope allow external, non-intrusive timing measurement. OS Clock APIs and printf statements introduce significant timing overhead and are unsuitable for accurate interrupt timing measurements.",
+                    multipleCorrect: true
+                }
             ]
         };
 
@@ -1127,6 +1348,7 @@
         renderQuiz('gpio');
         renderQuiz('digital');
         renderQuiz('os');
+        renderQuiz('testing');
         renderQuiz('optimise');
         renderAllTopics();
     </script>
