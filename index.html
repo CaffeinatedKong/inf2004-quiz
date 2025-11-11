@@ -282,7 +282,7 @@
                     <p>📚 Select a topic from the tabs above to start practicing.</p>
                     <p>✅ Choose "All Topics" for a comprehensive test covering everything.</p>
                     <p>🎯 Track your progress and review explanations for each question.</p>
-                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Optimise (9)</p>
+                    <p><strong>Current Question Bank:</strong> Introduction to Embedded (17) + Embedded C (18) + GPIO (16) + Digital Communication (11) + Embedded OS (10) + Optimise (9)</p>
                 </div>
             </div>
 
@@ -309,12 +309,7 @@
                     <p>Add your ADC questions to populate this section.</p>
                 </div>
             </div>
-            <div class="quiz-mode" id="os">
-                <div class="welcome-message">
-                    <h2>Embedded OS Questions Coming Soon</h2>
-                    <p>Add your Embedded OS questions to populate this section.</p>
-                </div>
-            </div>
+            <div class="quiz-mode" id="os"></div>
             <div class="quiz-mode" id="testing">
                 <div class="welcome-message">
                     <h2>Testing Questions Coming Soon</h2>
@@ -721,6 +716,85 @@
                     explanation: "False. UART doesn't use addressing as it's a point-to-point protocol. Protocols like I2C require slave addresses for multi-device communication."
                 }
             ],
+            os: [
+                {
+                    question: "Task functions typically do not call 'return()'",
+                    options: ["True", "False"],
+                    correct: 0,
+                    explanation: "True. In an RTOS, task functions are designed to loop indefinitely using for(;;) instead of returning. Returning from a task would cause it to be deleted by the scheduler."
+                },
+                {
+                    question: "A task is the smallest sequence of instructions that can be managed independently by an/a ....",
+                    options: ["interrupt", "inter-process communication (IPC)", "task control block (TCB)", "scheduler"],
+                    correct: 3,
+                    explanation: "A task is the smallest executable unit managed independently by the scheduler. The TCB stores task metadata, but the scheduler handles task execution order."
+                },
+                {
+                    question: "Which Task State occurs the least amount of time?",
+                    options: ["Ready", "Terminated", "Running", "Blocked"],
+                    correct: 1,
+                    explanation: "The Terminated state occurs for the least amount of time because a task only enters this state once when it finishes or is explicitly deleted. After that, it is removed from memory."
+                },
+                {
+                    question: "Which of these characteristics of Monolithic Kernel is false?",
+                    options: [
+                        "Hard to extend its functionality",
+                        "Both user services and kernel services are kept in the same address space",
+                        "Fast Execution",
+                        "A service crash does not crash the whole system"
+                    ],
+                    correct: 3,
+                    explanation: "In a Monolithic Kernel, all services share the same address space. Therefore, if one service crashes, the entire system is affected — making this statement false."
+                },
+                {
+                    question: "Which of the following are considerations when selecting an RTOS? (Select 2)",
+                    options: ["Features", "Machine Learning", "Debuggers", "Decompilers"],
+                    correct: [0, 2],
+                    explanation: "When selecting an RTOS, developers evaluate available kernel features and debugging support. Machine learning and decompilers are unrelated factors.",
+                    multipleCorrect: true
+                },
+                {
+                    question: "Which service/feature is the most important for multi-tasking to work in an EOS?",
+                    options: ["polling", "memory management", "context switch", "inter-process communication"],
+                    correct: 2,
+                    explanation: "Context switching is essential for multitasking. It allows multiple tasks to share a CPU by saving and restoring the task context when switching between them."
+                },
+                {
+                    question: "If a task calls the following function, it will be placed into a 'blocked' state for 250ms: vTaskDelay(250);",
+                    options: ["True", "False"],
+                    correct: 1,
+                    explanation: "False. vTaskDelay() delays a task for a number of ticks, not milliseconds. To delay for 250 ms, you must use vTaskDelay(pdMS_TO_TICKS(250));. Otherwise, the actual delay duration depends on the system tick rate."
+                },
+                {
+                    question: "In FreeRTOS, the lowest priority interrupt (ISR) will interrupt the highest priority task.",
+                    options: ["True", "False"],
+                    correct: 0,
+                    explanation: "False. Higher-priority interrupts preempt lower-priority ones. The lowest-priority ISR cannot interrupt a higher-priority task."
+                },
+                {
+                    question: "Which of the following statement is true based on the following code snippet?\n\nxTaskCreate(avg_task, 'AvgThread', configMINIMAL_STACK_SIZE, NULL, TEST_TASK_PRIORITY, NULL);\nxTaskCreate(simpleaverage, 'TempThread', configMINIMAL_STACK_SIZE, NULL, TEST_TASK_PRIORITY, NULL);\nxTaskCreate(printfunction, 'AvgThread', configMINIMAL_STACK_SIZE, NULL, TEST_TASK_PRIORITY, &printtask);",
+                    options: [
+                        "The program will crash at the instruction: 'for( ; ; )'",
+                        "Round-robin scheduling will occur",
+                        "Priority-based scheduling will occur",
+                        "The program will crash at the instruction: 'vTaskStartScheduler()'"
+                    ],
+                    correct: 1,
+                    explanation: "All tasks are created with the same priority (TEST_TASK_PRIORITY). FreeRTOS performs round-robin scheduling among equal-priority tasks."
+                },
+                {
+                    question: "Which Priority Driven Scheduling Algorithm is dynamic-priority based?",
+                    options: [
+                        "Rate Monotonic Scheduling (RMS)",
+                        "Least Slack Time (LST)",
+                        "Earliest Deadline First (EDF)",
+                        "Deadline Monotonic Scheduling (DMS)"
+                    ],
+                    correct: [1, 2],
+                    explanation: "Least Slack Time (LST) and Earliest Deadline First (EDF) are dynamic-priority algorithms. Their priorities change at runtime based on time constraints.",
+                    multipleCorrect: true
+                }
+            ],
             optimise: [
                 {
                     question: "Select the three main classification for optimization in embedded systems.",
@@ -1052,6 +1126,7 @@
         renderQuiz('c');
         renderQuiz('gpio');
         renderQuiz('digital');
+        renderQuiz('os');
         renderQuiz('optimise');
         renderAllTopics();
     </script>
