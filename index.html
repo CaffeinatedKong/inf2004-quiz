@@ -1356,7 +1356,105 @@
                     correct: 0,
                     explanation: "Microcontrollers typically handle voltage, current, charge, and induction as signal types. Acceleration is a physical quantity measured by sensors; the microcontroller does not directly process 'acceleration signals.'"
                 }
-            ]
+            ],
+            adc: [
+                {
+                    question: "Quantization process is generally __________ and results in information __________ .",
+                    options: [
+                        "irreversible, loss",
+                        "reversible, loss",
+                        "irreversible, gain",
+                        "reversible, gain"
+                    ],
+                    correct: 0,
+                    explanation: "Quantization is irreversible and results in information loss since continuous signals are mapped to discrete levels."
+                },
+                {
+                    question: "A signal that ranges from 0v to 3.3v is fed into a 7-bit ADC. What is the representation of sampled analog voltage of 0.12V? (Assume the error is between 0 to 1 least significant bit)",
+                    options: [
+                        "000 0110b",
+                        "0x04",
+                        "001 0010b",
+                        "0x12"
+                    ],
+                    correct: 1,
+                    explanation: "For a 7-bit ADC, resolution = 3.3V / 2⁷ = 0.02578V per step. 0.12V / 0.02578 ≈ 4.65 → round to 4 (0x04)."
+                },
+                {
+                    question: "Select which of the following occurs within an ADC (tick all that apply):",
+                    options: [
+                        "Transduction",
+                        "Quantisation",
+                        "Sampling",
+                        "Inversion"
+                    ],
+                    correct: [1, 2],
+                    multipleCorrect: true,
+                    explanation: "An ADC performs Sampling (discretizing in time) and Quantisation (discretizing in amplitude). Transduction happens in sensors before the ADC."
+                },
+                {
+                    question: "An ADC should quantise a continuous signal differently to how it quantises a single value.",
+                    options: ["True", "False"],
+                    correct: 1,
+                    explanation: "False. Quantisation works the same way regardless of whether the signal is continuous or a single measurement."
+                },
+                {
+                    question: "When referring to an ADC, quantisation means",
+                    options: [
+                        "The number of discrete levels used to represent a sample",
+                        "The sample rate at which a sample is converted to digital",
+                        "The sample is converted to analogue by a DAC",
+                        "The biggest (maximum) value that the sample can reach"
+                    ],
+                    correct: 0,
+                    explanation: "Quantisation refers to dividing the range of an analog signal into discrete digital levels for representation."
+                },
+                {
+                    question: "A transducer",
+                    options: [
+                        "Converts a signal from one form into another",
+                        "Always crosses between analogue and digital domains",
+                        "Is a digital device used to measure voltage",
+                        "Channels the energy emitted by the Tesseract"
+                    ],
+                    correct: 0,
+                    explanation: "A transducer converts one form of energy or signal into another—e.g., sound to voltage."
+                },
+                {
+                    question: "If an input signal to an ADC raises slightly above Vref, then it is",
+                    options: [
+                        "Clipped",
+                        "Measured as a 0",
+                        "Destroyed",
+                        "Ignored until the voltage drops below Vref"
+                    ],
+                    correct: 0,
+                    explanation: "Any voltage above the reference voltage (Vref) saturates at the maximum digital output—this is called clipping."
+                },
+                {
+                    question: "What is the typical sample rate and data size of a CD-quality audio signal?",
+                    options: [
+                        "20-bits and 24kHz",
+                        "8-bits and 48kHz",
+                        "256kHz and 32-bits",
+                        "44.1kHz and 16-bits"
+                    ],
+                    correct: 3,
+                    explanation: "CD-quality audio uses 44.1 kHz sampling rate and 16-bit resolution per channel."
+                },
+                {
+                    question: "Nyquist's theorem states that perfect reconstruction may be possible if the signal is sampled how fast?",
+                    options: [
+                        "At least 2x faster than the highest frequency component",
+                        "As fast as the ADC can sample",
+                        "At least 48kHz",
+                        "With at least 2x as many bits as the signal should have"
+                    ],
+                    correct: 0,
+                    explanation: "Nyquist’s theorem states the sampling rate must be at least twice the highest frequency in the signal for accurate reconstruction."
+                }
+            ],
+
 
         };
 
